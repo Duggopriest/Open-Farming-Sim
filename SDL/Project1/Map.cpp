@@ -31,14 +31,14 @@ void Map::WriteMap(const char* name)
 
 void	doChunk(int y, int x)
 {
-	if (!Chunk_Map[y][x].loaded)
+	if (!ChunkMap[y][x].loaded)
 	{
-		Chunk_Map[y][x].x = x;
-		Chunk_Map[y][x].y = y;
-		Chunk_Map[y][x].px = x * 5000;
-		Chunk_Map[y][x].py = y * 5000;
+		ChunkMap[y][x].x = x;
+		ChunkMap[y][x].y = y;
+		ChunkMap[y][x].px = x * 5000;
+		ChunkMap[y][x].py = y * 5000;
 	}
-	Chunk_Map[y][x].DrawChunk();
+	ChunkMap[y][x].DrawChunk();
 }
 
 void	Map::RenderChunks()
@@ -66,14 +66,14 @@ void	Map::RenderChunks()
 	}
 	
 	
-	if (!Chunk_Map[CCy][CCx].loaded)
+	if (!ChunkMap[CCy][CCx].loaded)
 	{
-		Chunk_Map[CCy][CCx].x = CCx;
-		Chunk_Map[CCy][CCx].y = CCy;
-		Chunk_Map[CCy][CCx].px = CCx * 25000;
-		Chunk_Map[CCy][CCx].py = CCy * 25000;
+		ChunkMap[CCy][CCx].x = CCx;
+		ChunkMap[CCy][CCx].y = CCy;
+		ChunkMap[CCy][CCx].px = CCx * 25000;
+		ChunkMap[CCy][CCx].py = CCy * 25000;
 	}
-	Chunk_Map[CCy][CCx].DrawChunk();
+	ChunkMap[CCy][CCx].DrawChunk();
 	*/
 
 	
@@ -81,14 +81,14 @@ void	Map::RenderChunks()
 	{
 		for (int x = CCx - 1; x <= CCx + 1; x++)
 		{
-			if (!Chunk_Map[y][CCx].loaded)
+			if (!ChunkMap[y][x].loaded)
 			{
-				Chunk_Map[y][x].x = x;
-				Chunk_Map[y][x].y = y;
-				Chunk_Map[y][x].px = x * 5000;
-				Chunk_Map[y][x].py = y * 5000;
+				ChunkMap[y][x].x = x;
+				ChunkMap[y][x].y = y;
+				ChunkMap[y][x].px = x * 5000;
+				ChunkMap[y][x].py = y * 5000;
 			}
-			Chunk_Map[y][x].DrawChunk();
+			ChunkMap[y][x].DrawChunk();
 		}
 	}
 	

@@ -2,23 +2,50 @@
 #include "PerlinNoise.h"
 #include "Header.hpp"
 
+Chunk::~Chunk()
+{
+}
 
 void	Chunk::DrawChunk()
 {
 	if (!loaded)
 		GenChunk();
 	SDL_Rect dstrect;
-	dstrect.h = 51;
-	dstrect.w = 51;
+	dstrect.h = ZOOM + 1;
+	dstrect.w = ZOOM + 1;
+
+	int	zoomMod = ZOOM - 50;
+
+	//int	cenx = (((WINDOW_WIDTH) / 2) * zoomMod + px) - player.x);
+	//int	ceny = (((WINDOW_HEIGHT) / 2) * zoomMod + py) - player.y);
+
+	int	ww = WINDOW_WIDTH / 2;
+	int	wh = WINDOW_HEIGHT / 2;
+
+	double	cenx = (ww - player.x) - ww;
+	double	ceny = (wh - player.y) - wh;
+
+	double modX = ww + px + (x * zoomMod * 100);
+	double modY = wh + py + (y * zoomMod * 100);
 
 	for (int oy = 0; oy < 100; oy++)
 	{
 		for (int ox = 0; ox < 100; ox++)
 		{
-			dstrect.x = (ox * 50 - player.x) + px;
-			dstrect.y = (oy * 50 - player.y) + py;
+			//dstrect.x = ((ox + ZOOM) * ZOOM) + cenx;
+			//dstrect.y = ((oy + ZOOM) * ZOOM) + ceny;
+
+			//dstrect.x = ox * ZOOM + cenx;
+			//dstrect.y = oy * ZOOM + ceny;
+
+			dstrect.x = (ox + cenx) * ZOOM + modX;
+			dstrect.y = (oy + ceny) * ZOOM + modY;
+
+			//dstrect.x = ((ox + cenx) - (WINDOW_WIDTH / 2)) * ZOOM + (WINDOW_WIDTH / 2);
+			//dstrect.y = ((oy + ceny) - (WINDOW_HEIGHT / 2)) * ZOOM + (WINDOW_HEIGHT / 2);
+
 			SDL_RenderCopy(renderer, textures[oy][ox].texture, NULL, &dstrect);
-			// SDL_RenderCopy(renderer, Terrain_Base[terrain[oy][ox]].texture, NULL, &dstrect); // no need for Texture_Array textures[200][200];
+			//SDL_RenderCopy(renderer, Terrain_Base[terrain[oy][ox]].texture, NULL, &dstrect); // no need for Texture_Array textures[200][200];
 		}
 	}
 }
@@ -69,11 +96,26 @@ void	Chunk::GenChunk()
 	std::cout << "y: " << y << std::endl;
 }
 
+void	Chunk::UpdateChunk()
+{
+	//int	mapSize = a_Plants.size();
+	//std::map <int, Plant>::iterator it;
+
+	for (int oy = 0; oy < 100; oy++)
+	{
+		for (int ox = 0; ox < 100; ox++)
+		{
+			if (PlantMap.find(oy) != PlantMap.end() &&
+				PlantMap[oy].find(ox) != PlantMap[oy].end())
+			{
+				textures[oy][ox].texture = Plant_Base[PlantMap[oy][ox].m_type].texture;
+			}
+		}
+	}
+}
+
 void	Chunk::Unload()
 {
 	
 }
 
-Chunk::~Chunk()
-{
-}

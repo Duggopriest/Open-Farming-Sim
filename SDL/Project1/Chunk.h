@@ -2,6 +2,8 @@
 # define CHUNK_H
 
 #include <SDL.h>
+#include <map>
+#include "Plant.h"
 
 typedef struct s_texture_array
 {
@@ -13,8 +15,10 @@ class Chunk
 	public:
 		~Chunk();
 
+
 		void	DrawChunk();
 		void	GenChunk();
+		void	UpdateChunk();
 
 		void	Unload();
 
@@ -24,6 +28,9 @@ class Chunk
 		unsigned char hydro[100][100];
 		unsigned char plowed[100][100];
 		unsigned char buildings[100][100];
+
+		// pointer of plants to draw
+
 
 		bool edited;
 		bool loaded;
@@ -35,6 +42,8 @@ class Chunk
 		int py;
 
 		Texture_Array textures[100][100];
+
+		std::map <int, std::map < int, Plant > > PlantMap;
 };
 
 

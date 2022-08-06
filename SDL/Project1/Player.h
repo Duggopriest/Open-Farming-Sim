@@ -6,8 +6,11 @@ class Player
 	public:
 		Player();
 		~Player();
-		int	x;
-		int	y;
+		double	x;
+		double	y;
+		double	speed;
+
+		double angle;
 };
 
 

@@ -153,7 +153,9 @@
     <ClCompile Include="Global_Funtions.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="PerlinNoise.cpp" />
+    <ClCompile Include="Plant.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chunk.h" />
@@ -168,7 +170,13 @@
     <ClInclude Include="miniRT\miniLibX_X11\mlx.h" />
     <ClInclude Include="miniRT\miniLibX_X11\mlx_int.h" />
     <ClInclude Include="PerlinNoise.h" />
+    <ClInclude Include="Plant.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="UI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\README.md" />
+    <None Include="..\..\var_tree.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
