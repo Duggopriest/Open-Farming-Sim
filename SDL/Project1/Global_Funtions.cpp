@@ -7,6 +7,7 @@ Texture_Array Terrain_Base[255];
 Texture_Array Building_Base[255];
 Texture_Array Plant_Base[255];
 Texture_Array Player_Base[255];
+Texture_Array ITEM_BASE[255];
 
 Ui UI;
 
@@ -68,13 +69,21 @@ void	getTextures()
 
 	
 
-	std::cout << "assigning Global Terrain Textures...\n"; // ==================================== Terrain Textures
+	std::cout << "assigning Global Plant Textures...\n"; // ==================================== Terrain Textures
 
 	Plant_Base[0].texture = Load_Texture("textures/plowed.bmp");
 	Plant_Base[1].texture = Load_Texture("textures/wheat_1.bmp");
 	Plant_Base[2].texture = Load_Texture("textures/wheat_2.bmp");
 	Plant_Base[3].texture = Load_Texture("textures/wheat_3.bmp");
 	Plant_Base[4].texture = Load_Texture("textures/wheat_4.bmp");
+
+
+
+	std::cout << "assigning Global Item Textures...\n"; // ==================================== Terrain Textures
+
+	ITEM_BASE[0].texture = NULL;
+	ITEM_BASE[1].texture = Load_Texture("textures/plow_item.bmp");
+	ITEM_BASE[2].texture = Load_Texture("textures/wheat_seed_item.bmp");
 
 
 }
@@ -94,6 +103,8 @@ void	BuildGlobals()
 	player.x = 1;
 	player.y = 1;
 	player.speed = 5;
+	player.a_toolBelt[0] = new Plow_Item();
+	player.a_toolBelt[1] = new Wheat_Seed_Item();
 
 	getTextures();
 	cout << "Building UI\n";

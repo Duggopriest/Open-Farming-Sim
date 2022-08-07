@@ -45,37 +45,6 @@ void	Map::RenderChunks()
 {
 	CCx = floor((double)player.x / 5000);
 	CCy = floor((double)player.y / 5000);
-
-
-	/*
-	std::thread TThread[9];
-
-	char i = 0;
-
-	for (int y = CCy - 1; y <= CCy + 1; y++)
-	{
-		for (int x = CCx - 1; x <= CCx + 1; x++)
-		{
-			TThread[i++] = std::thread(doChunk, y, x);
-		}
-	}
-
-	for (char j = 0; j < 9; j++)
-	{
-		TThread[j].join();
-	}
-	
-	
-	if (!ChunkMap[CCy][CCx].loaded)
-	{
-		ChunkMap[CCy][CCx].x = CCx;
-		ChunkMap[CCy][CCx].y = CCy;
-		ChunkMap[CCy][CCx].px = CCx * 25000;
-		ChunkMap[CCy][CCx].py = CCy * 25000;
-	}
-	ChunkMap[CCy][CCx].DrawChunk();
-	*/
-
 	
 	for (int y = CCy - 1; y <= CCy + 1; y++)
 	{
@@ -92,4 +61,22 @@ void	Map::RenderChunks()
 		}
 	}
 	
+}
+
+void	Map::updatePlants(bool b)
+{
+	if (!b)
+		return;
+	std::map <int, std::map < int, Chunk > >::iterator	itr;
+	std::map < int, Chunk >::iterator					ptr;
+
+	for (itr = ChunkMap.begin(); itr != ChunkMap.end(); itr++)
+	{
+		for (ptr = itr->second.begin(); ptr != itr->second.end(); ptr++)
+		{
+			ptr->second.doPlantCal();
+			ptr->second.UpdateChunk();
+		}
+	}
+	cout << "plants updated!\n";
 }

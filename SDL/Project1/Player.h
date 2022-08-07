@@ -1,6 +1,8 @@
 #ifndef PLAYER_H
 # define PLAYER_H
 
+#include "Item.h"
+
 class Player
 {
 	public:
@@ -11,6 +13,9 @@ class Player
 		double	speed;
 
 		double angle;
+
+		unsigned char	m_TBSelected;
+		Item			*a_toolBelt[5];
 };
 
 

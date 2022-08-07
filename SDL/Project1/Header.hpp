@@ -16,6 +16,7 @@
 #include <thread>
 
 #include "Player.h"
+#include "Item.h"
 #include "PerlinNoise.h"
 #include "Chunk.h"
 #include "Map.h"
@@ -34,6 +35,7 @@ extern Texture_Array Terrain_Base[255];
 extern Texture_Array Building_Base[255];
 extern Texture_Array Plant_Base[255];
 extern Texture_Array Player_Base[255];
+extern Texture_Array ITEM_BASE[255];
 
 extern	Ui UI;
 

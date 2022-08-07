@@ -19,8 +19,11 @@ class Chunk
 		void	DrawChunk();
 		void	GenChunk();
 		void	UpdateChunk();
+		void	doPlantCal();
 
 		void	Unload();
+
+
 
 		unsigned char terrain[100][100];
 		unsigned char airable[100][100];

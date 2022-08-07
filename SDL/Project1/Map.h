@@ -21,5 +21,7 @@ class Map
 		void	WriteMap(const char* name);//ToDo
 
 		void	RenderChunks();
+
+		void	updatePlants(bool b);
 };
 

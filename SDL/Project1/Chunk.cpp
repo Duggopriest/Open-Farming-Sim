@@ -108,8 +108,33 @@ void	Chunk::UpdateChunk()
 			if (PlantMap.find(oy) != PlantMap.end() &&
 				PlantMap[oy].find(ox) != PlantMap[oy].end())
 			{
-				textures[oy][ox].texture = Plant_Base[PlantMap[oy][ox].m_type].texture;
+				if (PlantMap[oy][ox].m_type != 0)
+					textures[oy][ox].texture = Plant_Base[PlantMap[oy][ox].m_type + (unsigned char)(PlantMap[oy][ox].m_currentGrowth * 0.04)].texture;
+				else
+					textures[oy][ox].texture = Plant_Base[PlantMap[oy][ox].m_type].texture;
 			}
+		}
+	}
+}
+
+void	Chunk::doPlantCal()
+{
+	int	x;
+	int	y;
+
+	Plant* temp;
+
+	std::map <int, std::map < int, Plant > >::iterator	itr;
+	std::map < int, Plant >::iterator					ptr;
+
+	for (itr = PlantMap.begin(); itr != PlantMap.end(); itr++)
+	{
+		for (ptr = itr->second.begin(); ptr != itr->second.end(); ptr++)
+		{
+			if (ptr->second.m_currentGrowth < 99)
+				ptr->second.m_currentGrowth += 10;
+			if (ptr->second.m_currentGrowth > 99)
+				ptr->second.m_currentGrowth = 99;
 		}
 	}
 }
