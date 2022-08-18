@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <map>
+#include <array>
 #include "Plant.h"
 
 typedef struct s_texture_array
@@ -28,9 +29,11 @@ class Chunk
 		unsigned char terrain[100][100];
 		unsigned char airable[100][100];
 		unsigned char fert[100][100];
+		std::array< std::array<unsigned char, 100>, 100> sa_fert;
 		unsigned char hydro[100][100];
-		unsigned char plowed[100][100];
+		std::array< std::array<unsigned char, 100>, 100> sa_hydro;
 		unsigned char buildings[100][100];
+		std::array< std::array<unsigned char, 100>, 100> sa_buildings;
 
 		// pointer of plants to draw
 
@@ -47,6 +50,15 @@ class Chunk
 		Texture_Array textures[100][100];
 
 		std::map <int, std::map < int, Plant > > PlantMap;
+
+		template<class T>
+		void pack(T& pack) {
+			pack(x, y, px, py, edited, loaded, 
+				sa_fert,
+				sa_hydro,
+				sa_buildings,
+				PlantMap);
+		}
 };
 
 

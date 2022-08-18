@@ -16,9 +16,6 @@ void	Chunk::DrawChunk()
 
 	int	zoomMod = ZOOM - 50;
 
-	//int	cenx = (((WINDOW_WIDTH) / 2) * zoomMod + px) - player.x);
-	//int	ceny = (((WINDOW_HEIGHT) / 2) * zoomMod + py) - player.y);
-
 	int	ww = WINDOW_WIDTH / 2;
 	int	wh = WINDOW_HEIGHT / 2;
 
@@ -32,20 +29,10 @@ void	Chunk::DrawChunk()
 	{
 		for (int ox = 0; ox < 100; ox++)
 		{
-			//dstrect.x = ((ox + ZOOM) * ZOOM) + cenx;
-			//dstrect.y = ((oy + ZOOM) * ZOOM) + ceny;
-
-			//dstrect.x = ox * ZOOM + cenx;
-			//dstrect.y = oy * ZOOM + ceny;
-
 			dstrect.x = (ox + cenx) * ZOOM + modX;
 			dstrect.y = (oy + ceny) * ZOOM + modY;
 
-			//dstrect.x = ((ox + cenx) - (WINDOW_WIDTH / 2)) * ZOOM + (WINDOW_WIDTH / 2);
-			//dstrect.y = ((oy + ceny) - (WINDOW_HEIGHT / 2)) * ZOOM + (WINDOW_HEIGHT / 2);
-
 			SDL_RenderCopy(renderer, textures[oy][ox].texture, NULL, &dstrect);
-			//SDL_RenderCopy(renderer, Terrain_Base[terrain[oy][ox]].texture, NULL, &dstrect); // no need for Texture_Array textures[200][200];
 		}
 	}
 }
@@ -109,7 +96,7 @@ void	Chunk::UpdateChunk()
 				PlantMap[oy].find(ox) != PlantMap[oy].end())
 			{
 				if (PlantMap[oy][ox].m_type != 0)
-					textures[oy][ox].texture = Plant_Base[PlantMap[oy][ox].m_type + (unsigned char)(PlantMap[oy][ox].m_currentGrowth * 0.04)].texture;
+					textures[oy][ox].texture = Plant_Base[PlantMap[oy][ox].m_type + (unsigned char)(PlantMap[oy][ox].m_currentGrowth * 0.04) + PlantMap[oy][ox].b_cut].texture;
 				else
 					textures[oy][ox].texture = Plant_Base[PlantMap[oy][ox].m_type].texture;
 			}

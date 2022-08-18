@@ -8,6 +8,9 @@ and may not be redistributed without written permission.*/
 
 int	Program_Running;
 int	Chunks_Rendered;
+int	angle;
+bool isSaving;
+bool isLoading;
 
 void	Draw_Grid()
 {
@@ -117,27 +120,162 @@ void	Th_DrawChunks(Map *map)
 	map->RenderChunks();
 }
 
-bool	doKeyboard()
+bool	doKeyboard(double Tdelta)
 {
+	static bool tabLock = true;
 	const Uint8* state;
+	if (0 > Tdelta > 10)
+		Tdelta = .001;
 
 	state = SDL_GetKeyboardState(NULL);
 	if (state[SDL_SCANCODE_W])
-		player.y -= 1;
+	{
+		player.angle = 0;
+		player.y -= Tdelta;
+	}
 	if (state[SDL_SCANCODE_S])
-		player.y += 1;
+	{
+		player.angle = 180;
+		player.y += Tdelta;
+	}
 	if (state[SDL_SCANCODE_A])
-		player.x -= 1;
+	{
+		player.angle = 270;
+		player.x -= Tdelta;
+	}
 	if (state[SDL_SCANCODE_D])
-		player.x += 1;
+	{
+		player.angle = 90;
+		player.x += Tdelta;
+	}
+	if (state[SDL_SCANCODE_TAB])
+	{
+		switch (event.type)
+		{
+			case SDL_KEYDOWN:
+				if (event.key.keysym.sym == SDLK_TAB)
+					tabLock = false;
+			case SDL_KEYUP:
+				if (event.key.keysym.sym == SDLK_TAB)
+					tabLock = true;
+			break;
+		}
+		if (tabLock)
+		{
+			if (UI.displayInv)
+				UI.displayInv = false;
+			else
+				UI.displayInv = true;
+			tabLock = false;
+		}
+	}
+	for (int i = 0; i < 10; i++)
+	{
+		if (state[30 + i])
+		{
+			player.m_TBSelected = i;
+		}
+	}
 	if (state[SDL_SCANCODE_ESCAPE])
 		return (1);
+
+	if (state[SDL_SCANCODE_F1])
+		isSaving = true;
+	if (state[SDL_SCANCODE_F2])
+		isLoading = true;
+
 	return (0);
 }
 
+void	doMouse(SDL_Event& event)
+{
+	if (event.type == SDL_MOUSEWHEEL)
+	{
+		if (event.wheel.y > 0) // scroll up
+		{
+			// Put code for handling "scroll up" here!
+
+			if (ZOOM < 100)
+				ZOOM += event.wheel.y;
+			cout << ZOOM << endl;
+		}
+		else if (event.wheel.y < 0) // scroll down
+		{
+			// Put code for handling "scroll down" here!
+
+			if (ZOOM > 10)
+				ZOOM += event.wheel.y;
+			cout << ZOOM << endl;
+		}
+		/*
+		if (event.wheel.x > 0) // scroll right
+		{
+			// ...
+		}
+		else if (event.wheel.x < 0) // scroll left
+		{
+			// ...
+		}
+		*/
+	}
+	if (event.type == SDL_MOUSEBUTTONDOWN)
+	{
+		// ... handle mouse clicks ...
+		SDL_MouseButtonEvent mouseEvent;
+
+		int	ww = WINDOW_WIDTH / 2;
+		int	wh = WINDOW_HEIGHT / 2;
+
+		int	x, y, Cx, Cy, Tx, Ty;
+
+		Uint32 MouseState = SDL_GetMouseState(&x, &y);
+
+		Cx = floor((double)((player.x * ZOOM) + x + -(WINDOW_WIDTH / 2)) / (ZOOM * 100));
+		Cy = floor((double)((player.y * ZOOM) + y + -(WINDOW_HEIGHT / 2)) / (ZOOM * 100));
+
+		Chunk& CC = ChunkMap[Cy][Cx];
+
+		Tx = (int)floor((double)((player.x * ZOOM) + x + -ww) / (ZOOM)) % 100;
+		Ty = (int)floor((double)((player.y * ZOOM) + y + -wh) / (ZOOM)) % 100;
+
+		if (Tx < 0)
+			Tx += 100;
+		if (Ty < 0)
+			Ty += 100;
+
+
+		if (event.button.button == SDL_BUTTON_LEFT)
+		{
+			if (player.a_toolBelt[player.m_TBSelected])
+				player.a_toolBelt[player.m_TBSelected]->doClick(x, y);
+		}
+		else if (event.button.button == SDL_BUTTON_MIDDLE)
+		{
+			cout << "X: " << x << endl;
+			cout << "Y: " << y << endl;
+			cout << "CX: " << Cx << endl;
+			cout << "CY: " << Cy << endl;
+			cout << "TX: " << Tx << endl;
+			cout << "TY: " << Ty << endl;
+			cout << "player X: " << player.x << endl;
+			cout << "player Y: " << player.y << endl;
+			cout << "ZOOM: " << ZOOM << endl;
+			cout << "ZOOM / 50: " << (double)ZOOM / 50 << endl;
+		}
+		else if (event.button.button == SDL_BUTTON_RIGHT)
+		{
+		}
+
+		
+		
+		//ChunkMap[Cy][Cx].textures[Ty][Tx].texture = Terrain_Base['r'].texture;
+	}
+}
+
 int main(int argc, char* args[]) {
-	
 	Program_Running = 1;
+	isSaving = false;
+	isLoading = false;
 
 	BuildGlobals();
 
@@ -148,17 +286,32 @@ int main(int argc, char* args[]) {
 	TTF_Init();
 
 	time_t seconds = time(NULL);
-	time_t next = time(NULL);
+	time_t fpsTimer = time(NULL);
+	time_t plantUpdateTimer = time(NULL);
+	bool plantUT = false;
+	bool plantUTR = false;
 	int	frame = 0;
-	int	fps = 0;
+	int	fps = 300;
 	
-
 	Chunks_Rendered = 1;
+
+	std::thread PlantThread;
+	std::thread TerrainThread;
 
 	std::cout << "Stating\n";
 	while (1) 
 	{
-
+		if (isSaving)
+		{
+			isSaving = false;
+			SaveGame();
+		}
+		if (isLoading)
+		{
+			isLoading = false;
+			LoadGame();
+		}
+		
 		// map.RenderChunks();
 
 		//Draw_Grid();
@@ -168,15 +321,31 @@ int main(int argc, char* args[]) {
 		//Display_playerPos();
 
 
-		std::thread TerrainThread(&Map::RenderChunks, map);
+		TerrainThread = std::thread(&Map::RenderChunks, map);  // ================= Renders Chunks
+
+		// how often plants get updated
+		plantUT = false;
+		if (seconds == plantUpdateTimer + 1)
+		{
+			if (plantUTR)
+				PlantThread.join(); PlantThread.~thread();		// waits for map.updatePlants(); to be done
+			plantUT = true;
+			plantUTR = true;
+			plantUpdateTimer = time(NULL);
+		}
+		if (plantUT)
+			PlantThread = std::thread(&Map::updatePlants, map, plantUT); // ====== Updates All Plants
 		
+		
+
        
 		if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
 			break;
 
-		if (doKeyboard())
+		doMouse(event);
+		if (doKeyboard(player.speed / fps))
 		{
-			TerrainThread.join(); TerrainThread.~thread();
+			
 			break;
 		}
 
@@ -184,25 +353,36 @@ int main(int argc, char* args[]) {
 
 
 		seconds = time(NULL);
-		if (seconds == next + 1)
+		if (seconds == fpsTimer + 1)
 		{
 			fps = frame;
 			frame = 0;
-			next = time(NULL);
+			fpsTimer = time(NULL);
 		}
 		else
 			frame++;
 		
 
 		//map.RenderChunks();
+		//if (plantUT == true)
+		
+		TerrainThread.join(); TerrainThread.~thread();		// waits for map.RenderChunks(); to be done
 
 
+		player.drawPlayer();
+		UI.drawUi();
 
-
-		TerrainThread.join(); TerrainThread.~thread();
 		Display_Frame_Time(fps);
 		SDL_RenderPresent(renderer);
+		SDL_RenderClear(renderer);
     }
+
+
+	TerrainThread.join();
+	//if (plantUT && plantUTR)
+	PlantThread.join();
+
+
 	Program_Running = 0;
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);

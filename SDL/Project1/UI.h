@@ -13,7 +13,6 @@ class Button
 		Button(int x, int y, int sizeX, int sizeY);
 
 
-
 		int	m_x;
 		int	m_y;
 
@@ -34,9 +33,13 @@ class Ui
 
 		Texture_Array a_textures[10];
 
+		bool	displayInv;
+
+
 		bool	checkButtonsClick(int x, int y);
 
 		void	loadInGameUi();
 		void	drawUi();
+		void	drawInv();
 };
 

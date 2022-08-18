@@ -78,5 +78,4 @@ void	Map::updatePlants(bool b)
 			ptr->second.UpdateChunk();
 		}
 	}
-	cout << "plants updated!\n";
 }

@@ -32,7 +32,7 @@ bool	Button::hasClicked(int x, int y)
 
 Ui::Ui()
 {
-
+	displayInv = false;
 }
 
 Ui::~Ui()
@@ -77,5 +77,30 @@ void	Ui::drawUi()
 		rect = { WINDOW_WIDTH / 2 - 250 + (50 * i), WINDOW_HEIGHT - 50, 50, 50 };
 		if (player.a_toolBelt[i])
 			SDL_RenderCopy(renderer, ITEM_BASE[player.a_toolBelt[i]->m_id].texture, NULL, &rect);
+	}
+	if (displayInv)
+		drawInv();
+}
+
+void	Ui::drawInv()
+{
+	SDL_Rect rect;
+	// ====================== inv background ===========================
+	rect = { WINDOW_WIDTH / 2 - 250, WINDOW_HEIGHT - 600, 500, 500 };
+	SDL_SetRenderDrawColor(renderer, 54, 48, 38, 0);
+	SDL_RenderFillRect(renderer, &rect);
+
+	SDL_SetRenderDrawColor(renderer, 44, 38, 28, 0);
+	int i = 0;
+	for (int oy = 0; oy < 10; oy++)
+	{
+		for (int ox = 0; ox < 10; ox++)
+		{
+			rect = { WINDOW_WIDTH / 2 - 245 + (ox * 50), WINDOW_HEIGHT - 595 + (oy * 50), 40, 40 };
+			SDL_RenderFillRect(renderer, &rect);
+			if (player.a_invontory[i])
+				SDL_RenderCopy(renderer, ITEM_BASE[player.a_invontory[i]->m_id].texture, NULL, &rect);
+			i++;
+		}
 	}
 }

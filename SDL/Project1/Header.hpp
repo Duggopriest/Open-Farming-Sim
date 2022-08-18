@@ -21,6 +21,7 @@
 #include "Chunk.h"
 #include "Map.h"
 #include "UI.h"
+#include "msgpack.hpp"
 
 using std::cout;
 using std::endl;
@@ -59,6 +60,9 @@ extern SDL_Window* window;
 
 // Global Functions
 void	BuildGlobals();
+void	SaveGame();
+void	LoadGame();
+Item*	getItem(unsigned char id);
 
 
 #endif
