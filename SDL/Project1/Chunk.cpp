@@ -79,8 +79,8 @@ void	Chunk::GenChunk()
 	}
 
 	loaded = true;
-	std::cout << "x: " << x << std::endl;
-	std::cout << "y: " << y << std::endl;
+	//std::cout << "x: " << x << std::endl;
+	//std::cout << "y: " << y << std::endl;
 }
 
 void	Chunk::UpdateChunk()
@@ -119,7 +119,7 @@ void	Chunk::doPlantCal()
 		for (ptr = itr->second.begin(); ptr != itr->second.end(); ptr++)
 		{
 			if (ptr->second.m_currentGrowth < 99)
-				ptr->second.m_currentGrowth += 10;
+				ptr->second.m_currentGrowth += 5;
 			if (ptr->second.m_currentGrowth > 99)
 				ptr->second.m_currentGrowth = 99;
 		}

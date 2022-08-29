@@ -5,7 +5,9 @@ Item::Item()
 {
 	m_id = 0;
 	m_name = "";
-	m_quanity = 1;
+	m_stackable = 1;
+	m_quanity = 0;
+	m_classType = 0;
 }
 
 Item& Item::operator=(const Item& src)
@@ -26,6 +28,7 @@ Plow_Item::Plow_Item()
 	m_id = 1;
 	m_name = "Plow";
 	m_quanity = 1;
+	m_classType = 't';
 }
 
 void Plow_Item::doClick(int x, int y)
@@ -60,6 +63,7 @@ Scythe_Item::Scythe_Item()
 	m_id = 2;
 	m_name = "Scythe";
 	m_quanity = 1;
+	m_classType = 't';
 }
 
 void Scythe_Item::doClick(int x, int y)
@@ -103,6 +107,7 @@ Wheat_Seed_Item::Wheat_Seed_Item()
 	m_id = 20;
 	m_name = "Wheat Seeds";
 	m_quanity = 1;
+	m_classType = 's';
 }
 
 void Wheat_Seed_Item::doClick(int x, int y)
@@ -142,6 +147,7 @@ Wheat_Item::Wheat_Item()
 	m_id = 40;
 	m_name = "Wheat";
 	m_quanity = 1;
+	m_classType = 'p';
 }
 
 void Wheat_Item::doClick(int x, int y)

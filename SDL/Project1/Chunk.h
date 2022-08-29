@@ -24,6 +24,8 @@ class Chunk
 
 		void	Unload();
 
+		int id;
+
 
 
 		unsigned char terrain[100][100];
@@ -53,7 +55,7 @@ class Chunk
 
 		template<class T>
 		void pack(T& pack) {
-			pack(x, y, px, py, edited, loaded, 
+			pack(id, x, y, px, py, edited, loaded,
 				sa_fert,
 				sa_hydro,
 				sa_buildings,

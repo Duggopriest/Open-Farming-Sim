@@ -39,6 +39,8 @@ extern Texture_Array Player_Base[255];
 extern Texture_Array ITEM_BASE[255];
 
 extern	Ui UI;
+extern	Item* mouseItem;
+extern	unsigned char	MENUID;
 
 extern std::map <int, std::map < int, Chunk > > ChunkMap; // where the chunks are stored
 
@@ -47,8 +49,6 @@ extern Player player;
 
 // plant array
 
-static const char* FONT_NAME = "font.ttf";
-static const int FONT_SIZE = 20;
 extern const int WINDOW_WIDTH, WINDOW_HEIGHT;
 
 extern int ZOOM;
@@ -57,12 +57,15 @@ extern SDL_Event event;
 extern SDL_Renderer* renderer;
 extern SDL_Window* window;
 
+extern bool EXIT;
+
 
 // Global Functions
 void	BuildGlobals();
 void	SaveGame();
 void	LoadGame();
 Item*	getItem(unsigned char id);
+void	exitGame(void);
 
 
 #endif

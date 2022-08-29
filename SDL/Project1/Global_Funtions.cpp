@@ -12,16 +12,20 @@ Texture_Array Player_Base[255];
 Texture_Array ITEM_BASE[255];
 
 Ui UI;
+unsigned char	MENUID;
 
 std::map <int, std::map < int, Chunk > > ChunkMap;
 
 Player player;
+
 
 const int WINDOW_WIDTH = 1920, WINDOW_HEIGHT = 1000;
 
 SDL_Event event;
 SDL_Renderer* renderer;
 SDL_Window* window;
+
+bool	EXIT;
 
 int ZOOM;
 
@@ -39,15 +43,35 @@ SDL_Texture* Load_Texture(const char *str)
 	return(temp);
 }
 
+void	exitGame(void)
+{
+	EXIT = 0;
+}
+
+
 void	buildUi()
 {
-	UI.v_buttons.push_back(Button(0, 0, 5, 5));// = Button(0, 0, 100, 100);
+	//UI.v_buttons.push_back(Button(0, 0, 5, 5));
+	UI.menus.resize(2);
+	MENUID = 0;
+	t_menus *cmenu;
+
+	// =================================== Esc menu
+	cmenu = &UI.menus[1];
+	cmenu->id = 1;
+	cmenu->name = "menu";
+	cmenu->blocks.push_back(SDL_Rect(WINDOW_WIDTH / 2 - 125, WINDOW_HEIGHT / 2 - 120, 250, 500));
+	cmenu->colours.push_back(SDL_Color(40, 30, 20, 0));
+
+	cmenu->v_buttons.push_back(Button(WINDOW_WIDTH / 2 - 110, WINDOW_HEIGHT / 2 - 100, 220, 95, SaveGame, SDL_Color(0, 255, 0, 0), "Save"));
+
+	cmenu->v_buttons.push_back(Button(WINDOW_WIDTH / 2 - 110, WINDOW_HEIGHT / 2, 220, 95, LoadGame, SDL_Color(255, 0, 0, 0), "Load"));
+
+	cmenu->v_buttons.push_back(Button(WINDOW_WIDTH / 2 - 110, WINDOW_HEIGHT / 2 + 100, 220, 95, exitGame, SDL_Color(100, 100, 100, 0), "Exit"));
 }
 
 void	buildInGameUi()
 {
-	UI.v_buttons.clear();
-	UI.v_buttons.push_back(Button(0, 0, 100, 100));// = Button(0, 0, 100, 100);
 }
 
 void	getTextures()
@@ -93,14 +117,18 @@ void	getTextures()
 
 }
 
-void	BuildGlobals()
+// ================================= Build Global vars
+void	BuildGlobals() 
 {
 	SDL_Init(SDL_INIT_VIDEO);
 	SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	SDL_RenderClear(renderer);
 
+
+
 	ZOOM = 50;
+	EXIT = 1;
 
 	Terrain_Seed = 6342;
 	Airable_Seed = 4523;
@@ -108,9 +136,9 @@ void	BuildGlobals()
 	player.x = 1;
 	player.y = 1;
 	player.speed = 5;
-	player.insertItemToolBelt(new Plow_Item());
-	player.insertItemToolBelt(new Wheat_Seed_Item());
-	player.insertItemToolBelt(new Scythe_Item());
+	player.insertItemInv(new Plow_Item());
+	player.insertItemInv(new Wheat_Seed_Item());
+	player.insertItemInv(new Scythe_Item());
 
 	getTextures();
 	cout << "Building UI\n";
@@ -129,15 +157,8 @@ class SaveClass
 
 void	packPlayer()
 {
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 110; i++)
 	{
-		if (i < 10)
-		{
-			if (player.a_toolBelt[i])
-				player.sa_toolBelt[i] = player.a_toolBelt[i]->m_id;
-			else
-				player.sa_toolBelt[i] = 0;
-		}
 		if (player.a_invontory[i])
 			player.sa_invontory[i] = player.a_invontory[i]->m_id;
 		else
@@ -160,12 +181,8 @@ Item* getItem(unsigned char id)
 
 void	unpackPlayer()
 {
-	for (int i = 0; i < 100; i++)
-	{
-		if (i < 10)
-			player.a_toolBelt[i] = getItem(player.sa_toolBelt[i]);
+	for (int i = 0; i < 110; i++)
 		player.a_invontory[i] = getItem(player.sa_invontory[i]);
-	}
 }
 
 void	packChunk(Chunk& chunk)
@@ -200,6 +217,10 @@ void	SaveGame()
 
 	cout << "SAVING\n";
 	packPlayer();
+
+	ChunkMap[-1][0].id = 420;
+
+	cout << ChunkMap[-1][0].id << endl;
 
 	std::map <int, std::map < int, Chunk > >::iterator itr;
 	std::map < int, Chunk >::iterator ptr;
@@ -266,3 +287,19 @@ void	LoadGame()
 	}
 	cout << "done\n";
 }
+
+/*
+void CreateText(const char* Message)
+{
+	
+	TTF_Font* font = TTF_OpenFont(FONT_NAME, FONT_SIZE);
+	if (!font)
+		std::cout << "Couldn't find/init open ttf font." << std::endl;
+	SDL_Color TextColor = { 245, 245, 220, 0 };
+	SDL_Surface* TextSurface = TTF_RenderText_Solid(font, Message, TextColor);
+	SDL_Texture* TextTexture = SDL_CreateTextureFromSurface(renderer, TextSurface);
+	SDL_Rect TextRect = { 0, 0, TextSurface->w, TextSurface->h };
+	SDL_FreeSurface(TextSurface);
+	SDL_RenderCopy(renderer, TextTexture, NULL, &TextRect);
+}
+*/

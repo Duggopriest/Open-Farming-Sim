@@ -8,22 +8,16 @@ Player::Player()
 	angle = 0;
 	m_TBSelected = 0;
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 110; i++)
 	{
-		if (i < 10)
-			a_toolBelt[i] = NULL;
 		a_invontory[i] = NULL;
 	}
 }
 
 Player::~Player()
 {
-	for (int i = 0; i < 5; i++)
-	{
-		delete a_toolBelt[i];
-	}
 
-	for (int i = 0; i < 50; i++)
+	for (int i = 0; i < 110; i++)
 	{
 		delete a_invontory[i];
 	}
@@ -38,26 +32,13 @@ Player& Player::operator=(const Player& src)
 bool	Player::insertItemInv(Item* newItem)
 {
 	int i = 0;
-	while (a_invontory[i] && i < 100)
+	while (a_invontory[i] && i < 110)
 		i++;
 
-	if (i >= 100)
+	if (i >= 110)
 		return (false);
 
 	a_invontory[i] = newItem;
-	return (true);
-}
-
-bool	Player::insertItemToolBelt(Item* newItem)
-{
-	int i = 0;
-	while (a_toolBelt[i] && i < 10)
-		i++;
-	cout << i << endl;
-	if (i >= 10)
-		return (false);
-
-	a_toolBelt[i] = newItem;
 	return (true);
 }
 

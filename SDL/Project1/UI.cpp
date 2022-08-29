@@ -4,17 +4,34 @@
 
 Button::Button() : m_x(0), m_y(0), m_sizeX(0), m_sizeY(0)
 {
-
+	funptr = NULL;
 }
 
-Button::Button(int x, int y, int sizeX, int sizeY): m_x(x), m_y(y), m_sizeX(sizeX), m_sizeY(sizeY)
+Button::~Button()
 {
+	//SDL_DestroyTexture(TextTexture);
+	
+}
 
+Button::Button(int x, int y, int sizeX, int sizeY, void (*fun)(void), SDL_Color colour, std::string name) :
+	m_x(x), m_y(y), m_sizeX(sizeX), m_sizeY(sizeY), color(colour), name(name)
+{
+	this->funptr = fun;
+
+	// ================= Assign Text texture
+	TTF_Font* font = TTF_OpenFont("font.ttf", 40);
+	if (!font)
+		std::cout << "Couldn't find/init open ttf font." << std::endl;
+
+	SDL_Color TextColor = { 200, 173, 127, 0 };
+	SDL_Surface* TextSurface = TTF_RenderText_Solid(font, name.c_str(), TextColor);
+	TextTexture = SDL_CreateTextureFromSurface(renderer, TextSurface);
+	TextRect = { x + (sizeX / 2) - TextSurface->w / 2, y + (sizeY / 2) - TextSurface->h / 2, TextSurface->w, TextSurface->h };
 }
 
 void	Button::onClick()
 {
-	std::cout << "Button Pressed\n";
+	funptr();
 }
 
 bool	Button::hasClicked(int x, int y)
@@ -28,6 +45,15 @@ bool	Button::hasClicked(int x, int y)
 	return (false);
 }
 
+void	Button::drawButton()
+{
+	SDL_Rect rect = { m_x, m_y, m_sizeX, m_sizeY };
+	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+	SDL_RenderFillRect(renderer, &rect);
+
+	SDL_RenderCopy(renderer, TextTexture, NULL, &TextRect);
+}
+
 // ====================================================================	UI
 
 Ui::Ui()
@@ -37,18 +63,18 @@ Ui::Ui()
 
 Ui::~Ui()
 {
-	for (int i = 0; i < 10; i++)
-	{
-		if (a_textures->texture)
-			delete a_textures->texture;
-	}
+}
+
+void	Ui::clearUi()
+{
 }
 
 bool	Ui::checkButtonsClick(int x, int y)
 {
-	for (auto it = begin(v_buttons); it != end(v_buttons); ++it) 
+	t_menus& cmenu = menus[MENUID];
+	for (int i = 0; i < menus[MENUID].v_buttons.size(); i++)
 	{
-		if (it->hasClicked(x, y))
+		if (menus[MENUID].v_buttons[i].hasClicked(x, y))
 			return (true);
 	}
 	return (false);
@@ -57,6 +83,22 @@ bool	Ui::checkButtonsClick(int x, int y)
 void	Ui::loadInGameUi()
 {
 
+}
+
+void	drawMenu()
+{
+	// ====================== menu background ===========================
+	for (int i = 0; i < UI.menus[MENUID].blocks.size(); i++)
+	{
+		SDL_Color& c = UI.menus[MENUID].colours[i];
+		SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
+		SDL_RenderFillRect(renderer, &UI.menus[MENUID].blocks[i]);
+
+	}
+	for (int i = 0; i < UI.menus[MENUID].v_buttons.size(); i++)
+	{
+		UI.menus[MENUID].v_buttons[i].drawButton();
+	}
 }
 
 void	Ui::drawUi()
@@ -72,21 +114,23 @@ void	Ui::drawUi()
 	SDL_SetRenderDrawColor(renderer, 121, 107, 86, 0);
 	SDL_RenderDrawRect(renderer, &rect);
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 99; i < 110; i++)
 	{
-		rect = { WINDOW_WIDTH / 2 - 250 + (50 * i), WINDOW_HEIGHT - 50, 50, 50 };
-		if (player.a_toolBelt[i])
-			SDL_RenderCopy(renderer, ITEM_BASE[player.a_toolBelt[i]->m_id].texture, NULL, &rect);
+		rect = { WINDOW_WIDTH / 2 - 250 + (50 * (i - 100)), WINDOW_HEIGHT - 50, 50, 50 };
+		if (player.a_invontory[i])
+			SDL_RenderCopy(renderer, ITEM_BASE[player.a_invontory[i]->m_id].texture, NULL, &rect);
 	}
 	if (displayInv)
 		drawInv();
+
+	drawMenu();
 }
 
 void	Ui::drawInv()
 {
 	SDL_Rect rect;
 	// ====================== inv background ===========================
-	rect = { WINDOW_WIDTH / 2 - 250, WINDOW_HEIGHT - 600, 500, 500 };
+	rect = { WINDOW_WIDTH / 2 - 250, WINDOW_HEIGHT - 550, 500, 500 };
 	SDL_SetRenderDrawColor(renderer, 54, 48, 38, 0);
 	SDL_RenderFillRect(renderer, &rect);
 
@@ -96,11 +140,19 @@ void	Ui::drawInv()
 	{
 		for (int ox = 0; ox < 10; ox++)
 		{
-			rect = { WINDOW_WIDTH / 2 - 245 + (ox * 50), WINDOW_HEIGHT - 595 + (oy * 50), 40, 40 };
+			rect = { WINDOW_WIDTH / 2 - 245 + (ox * 50), WINDOW_HEIGHT - 545 + (oy * 50), 40, 40 };
 			SDL_RenderFillRect(renderer, &rect);
 			if (player.a_invontory[i])
 				SDL_RenderCopy(renderer, ITEM_BASE[player.a_invontory[i]->m_id].texture, NULL, &rect);
 			i++;
 		}
+	}
+	if (mouseItem != NULL)
+	{
+		int	x, y;
+		SDL_GetMouseState(&x, &y);
+
+		rect = { x - 20, y - 20, 40, 40 };
+		SDL_RenderCopy(renderer, ITEM_BASE[mouseItem->m_id].texture, NULL, &rect);
 	}
 }

@@ -23,22 +23,19 @@ class Player
 
 		unsigned char	m_TBSelected;
 
-		Item	*a_toolBelt[10];
-		Item	*a_invontory[100];
+		Item	*a_invontory[110];
 
 
-		array< unsigned char, 10 > sa_toolBelt;
-		array< unsigned char, 100 > sa_invontory;
+		array< unsigned char, 110 > sa_invontory;
 		
 
 		bool	insertItemInv(Item* newItem);
-		bool	insertItemToolBelt(Item* newItem);
 		void	drawPlayer();
 
 		template<class T>
 		void pack(T& pack)
 		{
-			pack(x, y, angle, speed, sa_toolBelt, sa_invontory);
+			pack(x, y, angle, speed, sa_invontory);
 		};
 };
 

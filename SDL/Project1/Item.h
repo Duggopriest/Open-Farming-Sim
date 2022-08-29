@@ -9,8 +9,9 @@ class Item
 
 		unsigned char	m_id;
 		std::string		m_name;
-		bool			c_stackable;
+		bool			m_stackable;
 		unsigned char	m_quanity;
+		unsigned char	m_classType;
 
 		Item& operator=(const Item& src);
 	

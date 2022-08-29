@@ -12,6 +12,8 @@ int	angle;
 bool isSaving;
 bool isLoading;
 
+Item* mouseItem;
+
 void	Draw_Grid()
 {
 	SDL_SetRenderDrawColor(renderer, 100, 0, 100, 0);
@@ -28,27 +30,12 @@ void	Draw_Grid()
 	}
 }
 
-void CreateText(const char* Message) 
-{
-	TTF_Init();
-	TTF_Font* font = TTF_OpenFont(FONT_NAME, FONT_SIZE);
-	if (!font)
-		std::cout << "Couldn't find/init open ttf font." << std::endl;
-	SDL_Color TextColor = { 255, 255, 255, 255 };
-	SDL_Surface* TextSurface = TTF_RenderText_Solid(font, Message, TextColor);;
-	SDL_Texture* TextTexture = SDL_CreateTextureFromSurface(renderer, TextSurface);;
-	SDL_Rect TextRect = { 0, 0, TextSurface->w, TextSurface->h };
-	SDL_FreeSurface(TextSurface);
-	SDL_RenderCopy(renderer, TextTexture, NULL, &TextRect);
-	TTF_Quit();
-}
-
 void Display_playerPos() 
 {
 	TTF_Init();
 	std::string Message;
 	
-	TTF_Font* font = TTF_OpenFont(FONT_NAME, FONT_SIZE);
+	TTF_Font* font = TTF_OpenFont("font.ttf", 20);
 	if (!font)
 		std::cout << "Couldn't find/init open ttf font." << std::endl;
 	SDL_Color TextColor = { 255, 255, 255, 255 };
@@ -78,13 +65,11 @@ void Display_playerPos()
 	TTF_Quit();
 }
 
-
 void Display_Frame_Time(int &delta)
 {
-	TTF_Init();
 	std::string Message;
 
-	TTF_Font* font = TTF_OpenFont(FONT_NAME, FONT_SIZE);
+	TTF_Font* font = TTF_OpenFont("font.ttf", 20);
 
 	if (!font)
 		std::cout << "Couldn't find/init open ttf font." << std::endl;
@@ -94,7 +79,7 @@ void Display_Frame_Time(int &delta)
 	Message = "frame time: " + std::to_string(delta);
 
 
-	SDL_Surface* TextSurface = TTF_RenderText_Solid(font, &Message.at(0), TextColor);
+	SDL_Surface* TextSurface = TTF_RenderText_Solid(font, Message.c_str(), TextColor);
 	SDL_Texture* TextTexture = SDL_CreateTextureFromSurface(renderer, TextSurface);
 
 	SDL_Rect TextRect = { 0, 80, TextSurface->w, TextSurface->h };
@@ -105,9 +90,6 @@ void Display_Frame_Time(int &delta)
 	SDL_FreeSurface(TextSurface);
 	SDL_DestroyTexture(TextTexture);
 	TTF_CloseFont(font);
-
-
-	TTF_Quit();
 }
 
 void render_frame()
@@ -148,7 +130,7 @@ bool	doKeyboard(double Tdelta)
 		player.angle = 90;
 		player.x += Tdelta;
 	}
-	if (state[SDL_SCANCODE_TAB])
+	if (state[SDL_SCANCODE_TAB]) // ============== tab
 	{
 		switch (event.type)
 		{
@@ -169,26 +151,54 @@ bool	doKeyboard(double Tdelta)
 			tabLock = false;
 		}
 	}
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 10; i++) // ============== numbers
 	{
 		if (state[30 + i])
 		{
 			player.m_TBSelected = i;
 		}
 	}
-	if (state[SDL_SCANCODE_ESCAPE])
-		return (1);
+	if (state[SDL_SCANCODE_ESCAPE]) // ============== escape
+	{
+		switch (event.type)
+		{
+		case SDL_KEYDOWN:
+			if (event.key.keysym.sym == SDLK_ESCAPE)
+				tabLock = false;
+		case SDL_KEYUP:
+			if (event.key.keysym.sym == SDLK_ESCAPE)
+				tabLock = true;
+			break;
+		}
+		if (tabLock)
+		{
+			if (MENUID == 0)
+				MENUID = 1;
+			else
+			{
+				MENUID = 0;
+				UI.clearUi();
+			}
+			tabLock = false;
+		}
+	}
 
 	if (state[SDL_SCANCODE_F1])
 		isSaving = true;
 	if (state[SDL_SCANCODE_F2])
 		isLoading = true;
 
+	if (state[SDL_SCANCODE_Q])
+		player.insertItemInv(new Wheat_Item);
+	if (state[SDL_SCANCODE_E])
+		player.insertItemInv(new Wheat_Seed_Item);
+
 	return (0);
 }
 
 void	doMouse(SDL_Event& event)
 {
+	bool mouseLock = false;
 	if (event.type == SDL_MOUSEWHEEL)
 	{
 		if (event.wheel.y > 0) // scroll up
@@ -218,17 +228,24 @@ void	doMouse(SDL_Event& event)
 		}
 		*/
 	}
-	if (event.type == SDL_MOUSEBUTTONDOWN)
+
+	int	x, y, Cx, Cy, Tx, Ty, newitemnum;
+	static int itemnum;
+	static bool	fromInv;
+	Uint32 MouseState = SDL_GetMouseState(&x, &y);
+
+	int	ww = WINDOW_WIDTH / 2;
+	int	wh = WINDOW_HEIGHT / 2;
+	
+	if (event.type == SDL_MOUSEBUTTONDOWN && !mouseLock)
 	{
 		// ... handle mouse clicks ...
 		SDL_MouseButtonEvent mouseEvent;
 
-		int	ww = WINDOW_WIDTH / 2;
-		int	wh = WINDOW_HEIGHT / 2;
+		
 
-		int	x, y, Cx, Cy, Tx, Ty;
-
-		Uint32 MouseState = SDL_GetMouseState(&x, &y);
+		
+		
 
 		Cx = floor((double)((player.x * ZOOM) + x + -(WINDOW_WIDTH / 2)) / (ZOOM * 100));
 		Cy = floor((double)((player.y * ZOOM) + y + -(WINDOW_HEIGHT / 2)) / (ZOOM * 100));
@@ -243,12 +260,22 @@ void	doMouse(SDL_Event& event)
 		if (Ty < 0)
 			Ty += 100;
 
-
+		// ====================================================================== LEFT
 		if (event.button.button == SDL_BUTTON_LEFT)
 		{
-			if (player.a_toolBelt[player.m_TBSelected])
-				player.a_toolBelt[player.m_TBSelected]->doClick(x, y);
+			if (player.a_invontory[player.m_TBSelected + 100] && !UI.displayInv)
+				player.a_invontory[player.m_TBSelected + 100]->doClick(x, y);
+			// =============================== inv check
+			else if (UI.displayInv && !mouseItem)
+			{
+				itemnum = (x - (ww - 250)) / 50 + ((y - (WINDOW_HEIGHT - 550)) / 50) * 10;
+				if (itemnum > -1 && itemnum < 110)
+				{
+					mouseItem = player.a_invontory[itemnum];
+				}
+			}
 		}
+		// ====================================================================== MIDDLE
 		else if (event.button.button == SDL_BUTTON_MIDDLE)
 		{
 			cout << "X: " << x << endl;
@@ -262,13 +289,33 @@ void	doMouse(SDL_Event& event)
 			cout << "ZOOM: " << ZOOM << endl;
 			cout << "ZOOM / 50: " << (double)ZOOM / 50 << endl;
 		}
+		// ====================================================================== RIGHT
 		else if (event.button.button == SDL_BUTTON_RIGHT)
 		{
 		}
-
-		
-		
 		//ChunkMap[Cy][Cx].textures[Ty][Tx].texture = Terrain_Base['r'].texture;
+	}
+	if (event.type == SDL_MOUSEBUTTONUP)
+	{
+		if (UI.checkButtonsClick(x, y))
+			return ;
+		else if (mouseItem
+			&& x < ww + 250
+			&& y < WINDOW_HEIGHT)
+		{
+			newitemnum = (x - (ww - 250)) / 50 + ((y - (WINDOW_HEIGHT - 550)) / 50) * 10;
+			if (newitemnum >= 0 && newitemnum < 110)
+			{
+				if (!player.a_invontory[newitemnum])
+				{
+					player.a_invontory[itemnum] = NULL;
+					player.a_invontory[newitemnum] = mouseItem;
+					cout << "putting " << mouseItem->m_name << " into inv\n";
+				}
+			}
+		}
+		mouseItem = NULL;
+		mouseLock = false;
 	}
 }
 
@@ -276,6 +323,7 @@ int main(int argc, char* args[]) {
 	Program_Running = 1;
 	isSaving = false;
 	isLoading = false;
+	TTF_Init();
 
 	BuildGlobals();
 
@@ -299,7 +347,7 @@ int main(int argc, char* args[]) {
 	std::thread TerrainThread;
 
 	std::cout << "Stating\n";
-	while (1) 
+	while (EXIT) 
 	{
 		if (isSaving)
 		{
@@ -339,15 +387,10 @@ int main(int argc, char* args[]) {
 		
 
        
-		if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
-			break;
+		
 
 		doMouse(event);
-		if (doKeyboard(player.speed / fps))
-		{
-			
-			break;
-		}
+		doKeyboard(player.speed / fps);
 
 		
 
@@ -375,13 +418,12 @@ int main(int argc, char* args[]) {
 		Display_Frame_Time(fps);
 		SDL_RenderPresent(renderer);
 		SDL_RenderClear(renderer);
+		if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
+			break;
     }
 
-
-	TerrainThread.join();
-	//if (plantUT && plantUTR)
-	PlantThread.join();
-
+	if (plantUTR)
+		PlantThread.join(); PlantThread.~thread();
 
 	Program_Running = 0;
 	SDL_DestroyRenderer(renderer);
