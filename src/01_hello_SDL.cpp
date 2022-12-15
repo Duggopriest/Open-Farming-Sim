@@ -105,6 +105,7 @@ void	Th_DrawChunks(Map *map)
 bool	doKeyboard(double Tdelta)
 {
 	static bool tabLock = true;
+	static bool altLock = true;
 	const Uint8* state;
 	if (0 > Tdelta > 10)
 		Tdelta = .001;
@@ -144,11 +145,26 @@ bool	doKeyboard(double Tdelta)
 		}
 		if (tabLock)
 		{
-			if (UI.displayInv)
-				UI.displayInv = false;
-			else
-				UI.displayInv = true;
+			UI.displayInv = !UI.displayInv;
 			tabLock = false;
+		}
+	}
+	if (state[SDL_SCANCODE_LALT])
+	{
+		switch (event.type)
+		{
+		case SDL_KEYDOWN:
+			if (event.key.keysym.sym == SDLK_LALT)
+				altLock = false;
+		case SDL_KEYUP:
+			if (event.key.keysym.sym == SDLK_LALT)
+				altLock = true;
+			break;
+		}
+		if (altLock)
+		{
+			UI.displaySelected = !UI.displaySelected;
+			altLock = false;
 		}
 	}
 	for (int i = 0; i < 10; i++) // ============== numbers
@@ -182,16 +198,6 @@ bool	doKeyboard(double Tdelta)
 			tabLock = false;
 		}
 	}
-
-	if (state[SDL_SCANCODE_F1])
-		isSaving = true;
-	if (state[SDL_SCANCODE_F2])
-		isLoading = true;
-
-	if (state[SDL_SCANCODE_Q])
-		player.insertItemInv(new Wheat_Item);
-	if (state[SDL_SCANCODE_E])
-		player.insertItemInv(new Wheat_Seed_Item);
 
 	return (0);
 }
@@ -229,42 +235,27 @@ void	doMouse(SDL_Event& event)
 		*/
 	}
 
-	int	x, y, Cx, Cy, Tx, Ty, newitemnum;
+	int	x, y, newitemnum;
 	static int itemnum;
 	static bool	fromInv;
 	Uint32 MouseState = SDL_GetMouseState(&x, &y);
 
 	int	ww = WINDOW_WIDTH / 2;
 	int	wh = WINDOW_HEIGHT / 2;
+
+	if (UI.displaySelected || (event.type == SDL_MOUSEBUTTONDOWN && !mouseLock))
+		UI.getMouseCords();
 	
 	if (event.type == SDL_MOUSEBUTTONDOWN && !mouseLock)
 	{
 		// ... handle mouse clicks ...
 		SDL_MouseButtonEvent mouseEvent;
 
-		
-
-		
-		
-
-		Cx = floor((double)((player.x * ZOOM) + x + -(WINDOW_WIDTH / 2)) / (ZOOM * 100));
-		Cy = floor((double)((player.y * ZOOM) + y + -(WINDOW_HEIGHT / 2)) / (ZOOM * 100));
-
-		Chunk& CC = ChunkMap[Cy][Cx];
-
-		Tx = (int)floor((double)((player.x * ZOOM) + x + -ww) / (ZOOM)) % 100;
-		Ty = (int)floor((double)((player.y * ZOOM) + y + -wh) / (ZOOM)) % 100;
-
-		if (Tx < 0)
-			Tx += 100;
-		if (Ty < 0)
-			Ty += 100;
-
 		// ====================================================================== LEFT
 		if (event.button.button == SDL_BUTTON_LEFT)
 		{
 			if (player.a_invontory[player.m_TBSelected + 100] && !UI.displayInv)
-				player.a_invontory[player.m_TBSelected + 100]->doClick(x, y);
+				player.a_invontory[player.m_TBSelected + 100]->doClick();
 			// =============================== inv check
 			else if (UI.displayInv && !mouseItem)
 			{
@@ -280,10 +271,6 @@ void	doMouse(SDL_Event& event)
 		{
 			cout << "X: " << x << endl;
 			cout << "Y: " << y << endl;
-			cout << "CX: " << Cx << endl;
-			cout << "CY: " << Cy << endl;
-			cout << "TX: " << Tx << endl;
-			cout << "TY: " << Ty << endl;
 			cout << "player X: " << player.x << endl;
 			cout << "player Y: " << player.y << endl;
 			cout << "ZOOM: " << ZOOM << endl;
@@ -318,7 +305,13 @@ void	doMouse(SDL_Event& event)
 		mouseLock = false;
 	}
 }
+/*
+#include "../SDL/Project1/shader.h"
 
+int		glGetUniformLocation(int program, const char* name);
+void	glUniform1f(int location, float v0);
+void	glUniform2f(int location, float v0, float v1);
+*/
 int main(int argc, char* args[]) {
 	Program_Running = 1;
 	isSaving = false;
@@ -349,6 +342,7 @@ int main(int argc, char* args[]) {
 	std::cout << "Stating\n";
 	while (EXIT) 
 	{
+
 		if (isSaving)
 		{
 			isSaving = false;
@@ -383,11 +377,6 @@ int main(int argc, char* args[]) {
 		}
 		if (plantUT)
 			PlantThread = std::thread(&Map::updatePlants, map, plantUT); // ====== Updates All Plants
-		
-		
-
-       
-		
 
 		doMouse(event);
 		doKeyboard(player.speed / fps);

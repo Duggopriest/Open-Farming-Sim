@@ -59,10 +59,39 @@ void	Button::drawButton()
 Ui::Ui()
 {
 	displayInv = false;
+	displaySelected = false;
+	CC = NULL;
+	x = 0;
+	y = 0;
+	Cx = 0;
+	Cy = 0;
+	Tx = 0;
+	Ty = 0;
 }
 
 Ui::~Ui()
 {
+}
+
+void	Ui::getMouseCords()
+{
+	int	ww = WINDOW_WIDTH / 2;
+	int	wh = WINDOW_HEIGHT / 2;
+
+	SDL_GetMouseState(&x, &y);
+
+	Cx = floor((double)((player.x * ZOOM) + x + -(ww)) / (ZOOM * 100));
+	Cy = floor((double)((player.y * ZOOM) + y + -(wh)) / (ZOOM * 100));
+
+	CC = &ChunkMap[Cy][Cx];
+
+	Tx = (int)floor((double)((player.x * ZOOM) + x + -ww) / (ZOOM)) % 100;
+	Ty = (int)floor((double)((player.y * ZOOM) + y + -wh) / (ZOOM)) % 100;
+
+	if (Tx < 0)
+		Tx += 100;
+	if (Ty < 0)
+		Ty += 100;
 }
 
 void	Ui::clearUi()
@@ -122,6 +151,8 @@ void	Ui::drawUi()
 	}
 	if (displayInv)
 		drawInv();
+	if (displaySelected)
+		drawSelected();
 
 	drawMenu();
 }
@@ -154,5 +185,72 @@ void	Ui::drawInv()
 
 		rect = { x - 20, y - 20, 40, 40 };
 		SDL_RenderCopy(renderer, ITEM_BASE[mouseItem->m_id].texture, NULL, &rect);
+	}
+}
+
+void	drawText(int x, int y, string Message, int size)
+{
+	TTF_Font* font = TTF_OpenFont("font.ttf", size);
+
+	if (!font)
+	{
+		std::cout << "Couldn't find/init open ttf font." << std::endl;
+		return;
+	}
+
+	SDL_Color TextColor = { 255, 255, 255, 0 };
+
+	SDL_Surface* TextSurface = TTF_RenderText_Solid(font, Message.c_str(), TextColor);
+	SDL_Texture* TextTexture = SDL_CreateTextureFromSurface(renderer, TextSurface);
+
+	SDL_Rect TextRect = { x, y, TextSurface->w, TextSurface->h };
+
+	SDL_RenderCopy(renderer, TextTexture, NULL, &TextRect);
+
+	SDL_FreeSurface(TextSurface);
+	SDL_DestroyTexture(TextTexture);
+	TTF_CloseFont(font);
+}
+
+void	Ui::drawSelected()
+{
+	if (CC == NULL)
+		return;
+
+	// ====================== background ===========================
+	SDL_Rect rect;
+	rect = { WINDOW_WIDTH - 300, 0, 300, 400 };
+	SDL_SetRenderDrawColor(renderer, 54, 48, 38, 0);
+	SDL_RenderFillRect(renderer, &rect);
+	rect = { WINDOW_WIDTH - 300, 0, 300, 35 };
+	SDL_SetRenderDrawColor(renderer, 27, 24, 16, 0);
+	SDL_RenderFillRect(renderer, &rect);
+
+	std::string Message;
+
+	Message = "Moist: ";
+	Message += std::to_string(CC->moist[Ty][Tx]) + "%";
+	drawText(WINDOW_WIDTH - 290, 40, Message, 20);
+
+	if (CC->PlantMap.find(Ty) != CC->PlantMap.end() &&
+		CC->PlantMap[Ty].find(Tx) != CC->PlantMap[Ty].end())
+	{
+		drawText(WINDOW_WIDTH - 290, 0, CC->PlantMap[Ty][Tx].m_name, 25);
+
+		if (CC->PlantMap[Ty][Tx].m_type != 0)
+		{
+			Message = "Fert: ";
+			Message += std::to_string(CC->fert[Ty][Tx]) + "%";
+			drawText(WINDOW_WIDTH - 290, 60, Message, 20);
+			Message = "Growth: ";
+			Message += std::to_string((CC->PlantMap[Ty][Tx].m_currentGrowth / CC->PlantMap[Ty][Tx].m_maxGrowth * 10 + 10) * (-CC->PlantMap[Ty][Tx].b_cut + 1)) + "%";
+			if (CC->PlantMap[Ty][Tx].b_cut)
+				Message = "Harvested";
+			drawText(WINDOW_WIDTH - 290, 80, Message, 20);
+		}
+	}
+	else
+	{
+		drawText(WINDOW_WIDTH - 290, 0, "Ground", 25);
 	}
 }

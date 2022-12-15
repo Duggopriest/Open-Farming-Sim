@@ -16,7 +16,7 @@ Item& Item::operator=(const Item& src)
 	return (*this);
 }
 
-void	Item::doClick(int x, int y)
+void	Item::doClick()
 {
 	cout << "Default item click\n";
 }
@@ -31,29 +31,10 @@ Plow_Item::Plow_Item()
 	m_classType = 't';
 }
 
-void Plow_Item::doClick(int x, int y)
+void Plow_Item::doClick()
 {
-	int	ww = WINDOW_WIDTH / 2;
-	int	wh = WINDOW_HEIGHT / 2;
-
-	int	Cx, Cy, Tx, Ty;
-
-	Cx = floor((double)((player.x * ZOOM) + x + -(WINDOW_WIDTH / 2)) / (ZOOM * 100));
-	Cy = floor((double)((player.y * ZOOM) + y + -(WINDOW_HEIGHT / 2)) / (ZOOM * 100));
-
-	Chunk& CC = ChunkMap[Cy][Cx];
-
-	Tx = (int)floor((double)((player.x * ZOOM) + x + -ww) / (ZOOM)) % 100;
-	Ty = (int)floor((double)((player.y * ZOOM) + y + -wh) / (ZOOM)) % 100;
-
-	if (Tx < 0)
-		Tx += 100;
-	if (Ty < 0)
-		Ty += 100;
-
-	CC.PlantMap[Ty][Tx] = Plant();
-	CC.UpdateChunk();
-
+	UI.CC->PlantMap[UI.Ty][UI.Tx] = Plant();
+	UI.CC->UpdateChunk();
 }
 
 
@@ -66,36 +47,18 @@ Scythe_Item::Scythe_Item()
 	m_classType = 't';
 }
 
-void Scythe_Item::doClick(int x, int y)
+void Scythe_Item::doClick()
 {
-	int	ww = WINDOW_WIDTH / 2;
-	int	wh = WINDOW_HEIGHT / 2;
-
-	int	Cx, Cy, Tx, Ty;
-
-	Cx = floor((double)((player.x * ZOOM) + x + -(WINDOW_WIDTH / 2)) / (ZOOM * 100));
-	Cy = floor((double)((player.y * ZOOM) + y + -(WINDOW_HEIGHT / 2)) / (ZOOM * 100));
-
-	Chunk& CC = ChunkMap[Cy][Cx];
-
-	Tx = (int)floor((double)((player.x * ZOOM) + x + -ww) / (ZOOM)) % 100;
-	Ty = (int)floor((double)((player.y * ZOOM) + y + -wh) / (ZOOM)) % 100;
-
-	if (Tx < 0)
-		Tx += 100;
-	if (Ty < 0)
-		Ty += 100;
-
-	if (CC.PlantMap.find(Ty) != CC.PlantMap.end() &&
-		CC.PlantMap[Ty].find(Tx) != CC.PlantMap[Ty].end())
+	if (UI.CC->PlantMap.find(UI.Ty) != UI.CC->PlantMap.end() &&
+		UI.CC->PlantMap[UI.Ty].find(UI.Tx) != UI.CC->PlantMap[UI.Ty].end())
 	{
-		if (CC.PlantMap[Ty][Tx].m_type != 0
-			&& CC.PlantMap[Ty][Tx].b_cut == 0
-			&& CC.PlantMap[Ty][Tx].m_currentGrowth >= 99)
+		if (UI.CC->PlantMap[UI.Ty][UI.Tx].m_type != 0
+			&& UI.CC->PlantMap[UI.Ty][UI.Tx].b_cut == 0
+			&& UI.CC->PlantMap[UI.Ty][UI.Tx].m_currentGrowth >= 99)
 		{
 			player.insertItemInv(new Wheat_Item());
-			CC.PlantMap[Ty][Tx].b_cut = 1;
-			CC.UpdateChunk();
+			UI.CC->PlantMap[UI.Ty][UI.Tx].b_cut = 1;
+			UI.CC->UpdateChunk();
 		}
 	}
 }
@@ -110,34 +73,15 @@ Wheat_Seed_Item::Wheat_Seed_Item()
 	m_classType = 's';
 }
 
-void Wheat_Seed_Item::doClick(int x, int y)
+void Wheat_Seed_Item::doClick()
 {
-	int	ww = WINDOW_WIDTH / 2;
-	int	wh = WINDOW_HEIGHT / 2;
-
-	int	Cx, Cy, Tx, Ty;
-
-	Cx = floor((double)((player.x * ZOOM) + x + -(WINDOW_WIDTH / 2)) / (ZOOM * 100));
-	Cy = floor((double)((player.y * ZOOM) + y + -(WINDOW_HEIGHT / 2)) / (ZOOM * 100));
-
-	Chunk& CC = ChunkMap[Cy][Cx];
-
-	Tx = (int)floor((double)((player.x * ZOOM) + x + -ww) / (ZOOM)) % 100;
-	Ty = (int)floor((double)((player.y * ZOOM) + y + -wh) / (ZOOM)) % 100;
-
-	if (Tx < 0)
-		Tx += 100;
-	if (Ty < 0)
-		Ty += 100;
-
-	if (CC.PlantMap.find(Ty) != CC.PlantMap.end() &&
-		CC.PlantMap[Ty].find(Tx) != CC.PlantMap[Ty].end())
+	if (UI.CC->PlantMap.find(UI.Ty) != UI.CC->PlantMap.end() &&
+		UI.CC->PlantMap[UI.Ty].find(UI.Tx) != UI.CC->PlantMap[UI.Ty].end())
 	{
-		if (CC.PlantMap[Ty][Tx].m_type == 0)
-			CC.PlantMap[Ty][Tx] = Wheat();
-		CC.UpdateChunk();
+		if (UI.CC->PlantMap[UI.Ty][UI.Tx].m_type == 0)
+			UI.CC->PlantMap[UI.Ty][UI.Tx] = Wheat();
+		UI.CC->UpdateChunk();
 	}
-
 }
 
 
@@ -150,7 +94,7 @@ Wheat_Item::Wheat_Item()
 	m_classType = 'p';
 }
 
-void Wheat_Item::doClick(int x, int y)
+void Wheat_Item::doClick()
 {
 
 }

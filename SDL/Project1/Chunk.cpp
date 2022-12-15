@@ -11,8 +11,8 @@ void	Chunk::DrawChunk()
 	if (!loaded)
 		GenChunk();
 	SDL_Rect dstrect;
-	dstrect.h = ZOOM + 1;
-	dstrect.w = ZOOM + 1;
+	dstrect.h = ZOOM;
+	dstrect.w = ZOOM;
 
 	int	zoomMod = ZOOM - 50;
 
@@ -24,6 +24,8 @@ void	Chunk::DrawChunk()
 
 	double modX = ww + px + (x * zoomMod * 100);
 	double modY = wh + py + (y * zoomMod * 100);
+	
+	int	colorVal;
 
 	for (int oy = 0; oy < 100; oy++)
 	{
@@ -32,7 +34,12 @@ void	Chunk::DrawChunk()
 			dstrect.x = (ox + cenx) * ZOOM + modX;
 			dstrect.y = (oy + ceny) * ZOOM + modY;
 
+			colorVal = moist[oy][ox] * 3.5;
+			colorVal = (colorVal > 255 ? 255 : colorVal);
+
+			SDL_SetTextureColorMod(textures[oy][ox].texture, colorVal, colorVal, colorVal);
 			SDL_RenderCopy(renderer, textures[oy][ox].texture, NULL, &dstrect);
+			
 		}
 	}
 }
@@ -50,6 +57,7 @@ void	Chunk::GenChunk()
 		for (int ox = 0; ox < 100; ox++)
 		{
 			temp = Terrain_Noise.noise((double)(ox + x * 100) / 20, (double)(oy + y * 100) / 20, .5) * 100;
+			moist[oy][ox] = (-(unsigned char)temp + 100) * 0.25;
 
 			if (temp >= 80)
 				terrain[oy][ox] = 't';
@@ -60,21 +68,36 @@ void	Chunk::GenChunk()
 			else if (temp < 45 && temp >= 15)
 				terrain[oy][ox] = 'g';
 			else if (temp < 15)
+			{
+				moist[oy][ox] = 100;
 				terrain[oy][ox] = 'w';
-
+			}
+			
 			textures[oy][ox].texture = Terrain_Base[terrain[oy][ox]].texture;
 		}
 	}
 
-	PerlinNoise Airable_Noise(Airable_Seed);
-	//------------------------------------------- AIRABLE ---------------------------------------
+	PerlinNoise Fert_Noise(Fert_Seed);
+	//------------------------------------------- Fertlizer ---------------------------------------
 	for (int oy = 0; oy < 100; oy++)
 	{
 		for (int ox = 0; ox < 100; ox++)
 		{
-			temp = Airable_Noise.noise(ox / 10, oy / 10, .5) * 100;
+			temp = Fert_Noise.noise((double)(ox + x * 100) / 20, (double)(oy + y * 100) / 20, .5) * 50;
 
-			airable[oy][ox] = (unsigned char)temp;
+			fert[oy][ox] = (unsigned char)temp;
+		}
+	}
+
+	PerlinNoise Moist_Noise(Moist_Seed);
+	//------------------------------------------- Moisture ---------------------------------------
+	for (int oy = 0; oy < 100; oy++)
+	{
+		for (int ox = 0; ox < 100; ox++)
+		{
+			temp = Moist_Noise.noise((double)(ox + x * 100) / 20, (double)(oy + y * 100) / 20, .5) * 75;
+
+			moist[oy][ox] += (moist[oy][ox] + temp > 100 ? 100 : moist[oy][ox] + (unsigned char)temp);
 		}
 	}
 
@@ -119,7 +142,9 @@ void	Chunk::doPlantCal()
 		for (ptr = itr->second.begin(); ptr != itr->second.end(); ptr++)
 		{
 			if (ptr->second.m_currentGrowth < 99)
+			{
 				ptr->second.m_currentGrowth += 5;
+			}
 			if (ptr->second.m_currentGrowth > 99)
 				ptr->second.m_currentGrowth = 99;
 		}

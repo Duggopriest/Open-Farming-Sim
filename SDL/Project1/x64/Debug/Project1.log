@@ -1,2 +1,34 @@
-﻿  UI.cpp
+﻿  01_hello_SDL.cpp
+C:\Users\jgobb\Desktop\farm\src\01_hello_SDL.cpp(23,45): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\jgobb\Desktop\farm\src\01_hello_SDL.cpp(23,36): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\jgobb\Desktop\farm\src\01_hello_SDL.cpp(29,39): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\jgobb\Desktop\farm\src\01_hello_SDL.cpp(29,33): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\jgobb\Desktop\farm\src\01_hello_SDL.cpp(109,8): warning C4804: '>': unsafe use of type 'bool' in operation
+C:\Users\jgobb\Desktop\farm\src\01_hello_SDL.cpp(250,13): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\jgobb\Desktop\farm\src\01_hello_SDL.cpp(251,13): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\jgobb\Desktop\farm\src\01_hello_SDL.cpp(243,24): warning C4101: 'mouseEvent': unreferenced local variable
+C:\Users\jgobb\Desktop\farm\src\01_hello_SDL.cpp(332,15): warning C4101: 'state': unreferenced local variable
+  Chunk.cpp
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Chunk.cpp(32,35): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Chunk.cpp(33,35): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Chunk.cpp(110,6): warning C4101: 'y': unreferenced local variable
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Chunk.cpp(109,6): warning C4101: 'x': unreferenced local variable
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Chunk.cpp(112,9): warning C4101: 'temp': unreferenced local variable
+  Global_Funtions.cpp
+  Item.cpp
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Item.cpp(41,12): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Item.cpp(42,12): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Item.cpp(76,12): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Item.cpp(77,12): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Item.cpp(120,12): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Item.cpp(121,12): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+  Map.cpp
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Map.cpp(46,13): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Map.cpp(47,13): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+  PerlinNoise.cpp
+  Player.cpp
+  UI.cpp
+  Generating Code...
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Player.cpp(30): warning C4717: 'Player::operator=': recursive on all control paths, function will cause runtime stack overflow
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Item.cpp(17): warning C4717: 'Item::operator=': recursive on all control paths, function will cause runtime stack overflow
   Project1.vcxproj -> C:\Users\jgobb\Desktop\farm\SDL\x64\Debug\Project1.exe

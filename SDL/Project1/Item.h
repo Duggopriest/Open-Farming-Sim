@@ -15,7 +15,7 @@ class Item
 
 		Item& operator=(const Item& src);
 	
-		virtual void	doClick(int x, int y);
+		virtual void	doClick();
 };
 
 
@@ -25,7 +25,7 @@ class Plow_Item : public Item
 	public:
 		Plow_Item();
 
-		void	doClick(int x, int y);
+		void	doClick();
 };
 
 class Scythe_Item : public Item
@@ -33,7 +33,7 @@ class Scythe_Item : public Item
 public:
 	Scythe_Item();
 
-	void	doClick(int x, int y);
+	void	doClick();
 };
 
 // =================================== Plant items
@@ -42,7 +42,7 @@ class Wheat_Seed_Item : public Item
 	public:
 		Wheat_Seed_Item();
 
-		void	doClick(int x, int y);
+		void	doClick();
 };
 
 class Wheat_Item : public Item
@@ -50,5 +50,5 @@ class Wheat_Item : public Item
 public:
 	Wheat_Item();
 
-	void	doClick(int x, int y);
+	void	doClick();
 };

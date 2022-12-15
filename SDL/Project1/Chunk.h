@@ -1,7 +1,7 @@
 #ifndef CHUNK_H
 # define CHUNK_H
 
-#include <SDL.h>
+#include "include/SDL.h"
 #include <map>
 #include <array>
 #include "Plant.h"
@@ -29,11 +29,10 @@ class Chunk
 
 
 		unsigned char terrain[100][100];
-		unsigned char airable[100][100];
 		unsigned char fert[100][100];
 		std::array< std::array<unsigned char, 100>, 100> sa_fert;
-		unsigned char hydro[100][100];
-		std::array< std::array<unsigned char, 100>, 100> sa_hydro;
+		unsigned char moist[100][100];
+		std::array< std::array<unsigned char, 100>, 100> sa_moist;
 		unsigned char buildings[100][100];
 		std::array< std::array<unsigned char, 100>, 100> sa_buildings;
 
@@ -57,7 +56,7 @@ class Chunk
 		void pack(T& pack) {
 			pack(id, x, y, px, py, edited, loaded,
 				sa_fert,
-				sa_hydro,
+				sa_moist,
 				sa_buildings,
 				PlantMap);
 		}

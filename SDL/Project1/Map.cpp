@@ -14,19 +14,9 @@ Map::~Map(void)
 	
 }
 
-void	Map::LoadMap(const char* name)
-{
-}
-
 void	Map::UnLoadMap(void)
 {
 	loaded = false;
-}
-
-
-void Map::WriteMap(const char* name)
-{
-
 }
 
 void	doChunk(int y, int x)

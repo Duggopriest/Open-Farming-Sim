@@ -1,4 +1,9 @@
 #pragma once
+
+//#include "Header.hpp"
+
+#include <string>
+
 class Plant
 {
 	public:
@@ -7,6 +12,7 @@ class Plant
 		unsigned char	m_maxGrowth;
 		unsigned char	m_currentGrowth;
 		bool			b_cut;
+		std::string		m_name;
 
 		template<class T>
 		void pack(T& pack) {

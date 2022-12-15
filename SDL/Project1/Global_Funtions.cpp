@@ -3,7 +3,8 @@
 
 
 int	Terrain_Seed;
-int	Airable_Seed;
+int	Fert_Seed;
+int	Moist_Seed;
 
 Texture_Array Terrain_Base[255];
 Texture_Array Building_Base[255];
@@ -17,7 +18,7 @@ unsigned char	MENUID;
 std::map <int, std::map < int, Chunk > > ChunkMap;
 
 Player player;
-
+int MONEY;
 
 const int WINDOW_WIDTH = 1920, WINDOW_HEIGHT = 1000;
 
@@ -121,17 +122,20 @@ void	getTextures()
 void	BuildGlobals() 
 {
 	SDL_Init(SDL_INIT_VIDEO);
-	SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
+	window = SDL_CreateWindow("Open Farm Sim", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0 | SDL_WINDOW_OPENGL);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	
+	//SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	SDL_RenderClear(renderer);
-
-
+	
 
 	ZOOM = 50;
 	EXIT = 1;
 
 	Terrain_Seed = 6342;
-	Airable_Seed = 4523;
+	Fert_Seed = 2577;
+	Moist_Seed = rand();
 
 	player.x = 1;
 	player.y = 1;
@@ -139,6 +143,8 @@ void	BuildGlobals()
 	player.insertItemInv(new Plow_Item());
 	player.insertItemInv(new Wheat_Seed_Item());
 	player.insertItemInv(new Scythe_Item());
+
+	MONEY = 0;
 
 	getTextures();
 	cout << "Building UI\n";
@@ -151,7 +157,7 @@ class SaveClass
 	public:
 		template<class T>
 		void pack(T& pack) {
-			pack(player, Terrain_Seed, Airable_Seed, Chunks_Rendered, ChunkMap);
+			pack(player, Terrain_Seed, Fert_Seed, Chunks_Rendered, ChunkMap);
 		}
 };
 
@@ -192,7 +198,7 @@ void	packChunk(Chunk& chunk)
 		for (int x = 0; x < 100; x++)
 		{
 			chunk.sa_fert[y][x] = chunk.fert[y][x];
-			chunk.sa_hydro[y][x] = chunk.hydro[y][x];
+			chunk.sa_moist[y][x] = chunk.moist[y][x];
 			chunk.sa_buildings[y][x] = chunk.buildings[y][x];
 		}
 	}
@@ -205,7 +211,7 @@ void	unpackChunk(Chunk& chunk)
 		for (int x = 0; x < 100; x++)
 		{
 			chunk.fert[y][x] = chunk.sa_fert[y][x];
-			chunk.hydro[y][x] = chunk.sa_hydro[y][x];
+			chunk.moist[y][x] = chunk.sa_moist[y][x];
 			chunk.buildings[y][x] = chunk.sa_buildings[y][x];
 		}
 	}
@@ -243,11 +249,18 @@ void	SaveGame()
 }
 
 typedef unsigned char BYTE;
-std::vector<BYTE> readFile(const char* filename)
+std::vector<BYTE> readFile(const char* filename, bool *fail)
 {
 	// open the file:
 	std::streampos fileSize;
 	std::ifstream file(filename, std::ios::binary);
+
+	if (file.fail())
+	{
+		*fail = true;
+		std::vector<BYTE> fileData(fileSize);
+		return fileData;
+	}
 
 	// get its size:
 	file.seekg(0, std::ios::end);
@@ -262,8 +275,15 @@ std::vector<BYTE> readFile(const char* filename)
 
 void	LoadGame()
 {
+	bool fail;
 	cout << "LOADDING\n";
-	std::vector<BYTE> data = readFile("test");
+	std::vector<BYTE> data = readFile("test", &fail);
+
+	if (fail)
+	{
+		cout << "!!!FAILED TO LOAD!!!" << endl;
+		return;
+	}
 
 	cout << "unpacking" << endl;
 	SaveClass sc = msgpack::unpack<SaveClass>(data);
@@ -287,19 +307,3 @@ void	LoadGame()
 	}
 	cout << "done\n";
 }
-
-/*
-void CreateText(const char* Message)
-{
-	
-	TTF_Font* font = TTF_OpenFont(FONT_NAME, FONT_SIZE);
-	if (!font)
-		std::cout << "Couldn't find/init open ttf font." << std::endl;
-	SDL_Color TextColor = { 245, 245, 220, 0 };
-	SDL_Surface* TextSurface = TTF_RenderText_Solid(font, Message, TextColor);
-	SDL_Texture* TextTexture = SDL_CreateTextureFromSurface(renderer, TextSurface);
-	SDL_Rect TextRect = { 0, 0, TextSurface->w, TextSurface->h };
-	SDL_FreeSurface(TextSurface);
-	SDL_RenderCopy(renderer, TextTexture, NULL, &TextRect);
-}
-*/

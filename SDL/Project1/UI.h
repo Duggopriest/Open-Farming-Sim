@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <SDL.h>
+#include "include/SDL.h"
 #include "Chunk.h"
 #include <string>
 
@@ -52,6 +52,11 @@ class Ui
 		vector<t_menus> menus;
 
 		bool	displayInv;
+		bool	displaySelected;
+
+		int x, y, Cx, Cy, Tx, Ty;
+		Chunk* CC;
+		void	getMouseCords();
 
 
 		bool	checkButtonsClick(int x, int y);
@@ -60,5 +65,6 @@ class Ui
 		void	loadInGameUi();
 		void	drawUi();
 		void	drawInv();
+		void	drawSelected();
 };
 

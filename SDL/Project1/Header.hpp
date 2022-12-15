@@ -1,8 +1,9 @@
 #ifndef HEADER_HPP
 # define HEADER_HPP
 
-#include <SDL.h>
-#include <SDL_ttf.h>
+#include "include/SDL.h"
+#include "include/SDL_ttf.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -25,12 +26,14 @@
 
 using std::cout;
 using std::endl;
+using std::string;
 
 extern int	Program_Running;
 extern int	Chunks_Rendered;
 
 extern int	Terrain_Seed;
-extern int	Airable_Seed;
+extern int	Fert_Seed;
+extern int	Moist_Seed;
 
 extern Texture_Array Terrain_Base[255];
 extern Texture_Array Building_Base[255];
@@ -46,6 +49,7 @@ extern std::map <int, std::map < int, Chunk > > ChunkMap; // where the chunks ar
 
 
 extern Player player;
+extern int MONEY;
 
 // plant array
 
