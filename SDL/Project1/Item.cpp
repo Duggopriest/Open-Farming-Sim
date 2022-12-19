@@ -54,7 +54,7 @@ void Scythe_Item::doClick()
 	{
 		if (UI.CC->PlantMap[UI.Ty][UI.Tx].m_type != 0
 			&& UI.CC->PlantMap[UI.Ty][UI.Tx].b_cut == 0
-			&& UI.CC->PlantMap[UI.Ty][UI.Tx].m_currentGrowth >= 99)
+			&& UI.CC->PlantMap[UI.Ty][UI.Tx].m_currentGrowth >= UI.CC->PlantMap[UI.Ty][UI.Tx].m_maxGrowth)
 		{
 			player.insertItemInv(new Wheat_Item());
 			UI.CC->PlantMap[UI.Ty][UI.Tx].b_cut = 1;

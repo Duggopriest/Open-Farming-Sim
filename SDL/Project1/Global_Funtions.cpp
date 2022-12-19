@@ -75,6 +75,19 @@ void	buildInGameUi()
 {
 }
 
+void	getGrassTextures()
+{
+	Terrain_Base['g'].texture = Load_Texture("textures/g1.bmp");
+	Terrain_Base['h'].texture = Load_Texture("textures/g2.bmp");
+	Terrain_Base['i'].texture = Load_Texture("textures/g3.bmp");
+	Terrain_Base['j'].texture = Load_Texture("textures/g4.bmp");
+	Terrain_Base['k'].texture = Load_Texture("textures/g5.bmp");
+	Terrain_Base['l'].texture = Load_Texture("textures/g6.bmp");
+	Terrain_Base['m'].texture = Load_Texture("textures/g7.bmp");
+	Terrain_Base['n'].texture = Load_Texture("textures/g8.bmp");
+	Terrain_Base['o'].texture = Load_Texture("textures/g9.bmp");
+}
+
 void	getTextures()
 {
 	std::cout << "assigning Global Player Textures...\n"; // ==================================== Player Textures
@@ -89,7 +102,7 @@ void	getTextures()
 
 	Terrain_Base[0].texture = NULL;
 
-	Terrain_Base['g'].texture = Load_Texture("textures/g.bmp");
+	getGrassTextures();
 	Terrain_Base['r'].texture = Load_Texture("textures/r.bmp");
 	Terrain_Base['w'].texture = Load_Texture("textures/w.bmp");
 	Terrain_Base['t'].texture = Load_Texture("textures/t.bmp");
@@ -282,7 +295,7 @@ void	LoadGame()
 	if (fail)
 	{
 		cout << "!!!FAILED TO LOAD!!!" << endl;
-		return;
+		//return;
 	}
 
 	cout << "unpacking" << endl;

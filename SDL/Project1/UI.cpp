@@ -243,7 +243,7 @@ void	Ui::drawSelected()
 			Message += std::to_string(CC->fert[Ty][Tx]) + "%";
 			drawText(WINDOW_WIDTH - 290, 60, Message, 20);
 			Message = "Growth: ";
-			Message += std::to_string((CC->PlantMap[Ty][Tx].m_currentGrowth / CC->PlantMap[Ty][Tx].m_maxGrowth * 10 + 10) * (-CC->PlantMap[Ty][Tx].b_cut + 1)) + "%";
+			Message += std::to_string(CC->PlantMap[Ty][Tx].m_currentGrowth);//std::to_string((CC->PlantMap[Ty][Tx].m_currentGrowth / CC->PlantMap[Ty][Tx].m_maxGrowth * 10 + 10) * (-CC->PlantMap[Ty][Tx].b_cut + 1)) + "%";
 			if (CC->PlantMap[Ty][Tx].b_cut)
 				Message = "Harvested";
 			drawText(WINDOW_WIDTH - 290, 80, Message, 20);

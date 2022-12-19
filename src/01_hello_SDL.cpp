@@ -213,7 +213,6 @@ void	doMouse(SDL_Event& event)
 
 			if (ZOOM < 100)
 				ZOOM += event.wheel.y;
-			cout << ZOOM << endl;
 		}
 		else if (event.wheel.y < 0) // scroll down
 		{
@@ -221,7 +220,6 @@ void	doMouse(SDL_Event& event)
 
 			if (ZOOM > 10)
 				ZOOM += event.wheel.y;
-			cout << ZOOM << endl;
 		}
 		/*
 		if (event.wheel.x > 0) // scroll right

@@ -1,14 +1,14 @@
 ﻿  Chunk.cpp
 C:\Users\jgobb\Desktop\farm\SDL\Project1\Chunk.cpp(34,35): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 C:\Users\jgobb\Desktop\farm\SDL\Project1\Chunk.cpp(35,35): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\jgobb\Desktop\farm\SDL\Project1\Chunk.cpp(37,29): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\jgobb\Desktop\farm\SDL\Project1\Chunk.cpp(63,49): warning C4244: '=': conversion from 'double' to 'unsigned char', possible loss of data
-C:\Users\jgobb\Desktop\farm\SDL\Project1\Chunk.cpp(136,6): warning C4101: 'y': unreferenced local variable
-C:\Users\jgobb\Desktop\farm\SDL\Project1\Chunk.cpp(135,6): warning C4101: 'x': unreferenced local variable
-C:\Users\jgobb\Desktop\farm\SDL\Project1\Chunk.cpp(138,9): warning C4101: 'temp': unreferenced local variable
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Chunk.cpp(37,62): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Chunk.cpp(62,49): warning C4244: '=': conversion from 'double' to 'unsigned char', possible loss of data
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Chunk.cpp(75,22): warning C4553: '==': result of expression not used; did you intend '='?
+C:\Users\jgobb\Desktop\farm\SDL\Project1\Chunk.cpp(143,9): warning C4101: 'temp': unreferenced local variable
+  Plant.cpp
   Generating code
-  2 of 1668 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
+  5 of 1669 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Project1.vcxproj -> C:\Users\jgobb\Desktop\farm\SDL\x64\Release\Project1.exe

@@ -8,6 +8,8 @@ class Plant
 {
 	public:
 		Plant();
+		char	m_x;
+		char	m_y;
 		unsigned char	m_type;
 		unsigned char	m_maxGrowth;
 		unsigned char	m_currentGrowth;
@@ -18,6 +20,7 @@ class Plant
 		void pack(T& pack) {
 			pack(m_type, m_maxGrowth, m_currentGrowth, b_cut);
 		}
+
 };
 
 class Wheat : public Plant
