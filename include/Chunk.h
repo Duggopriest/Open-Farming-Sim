@@ -1,7 +1,7 @@
 #ifndef CHUNK_H
 # define CHUNK_H
 
-#include "include/SDL.h"
+#include "SDL/SDL.h"
 #include <map>
 #include <array>
 #include "Plant.h"

@@ -1,5 +1,5 @@
-#include "Map.h"
-#include "PerlinNoise.h"
+#include "../include/Map.h"
+#include "../include/PerlinNoise.h"
 #include <thread>
 
 Map::Map(void)

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "include/SDL.h"
+#include "SDL/SDL.h"
 #include "Chunk.h"
 #include <string>
 

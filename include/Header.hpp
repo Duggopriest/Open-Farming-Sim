@@ -1,8 +1,8 @@
 #ifndef HEADER_HPP
 # define HEADER_HPP
 
-#include "include/SDL.h"
-#include "include/SDL_ttf.h"
+#include "SDL/SDL.h"
+#include "SDL/SDL_ttf.h"
 
 #include <stdio.h>
 #include <stdlib.h>

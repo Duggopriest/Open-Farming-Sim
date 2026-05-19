@@ -1,5 +1,5 @@
-#include "UI.h"
-#include "Header.hpp"
+#include "../include/UI.h"
+#include "../include/Header.hpp"
 #include <iostream>
 
 Button::Button() : m_x(0), m_y(0), m_sizeX(0), m_sizeY(0)

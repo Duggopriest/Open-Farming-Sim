@@ -1,4 +1,4 @@
-#include "PerlinNoise.h"
+#include "../include/PerlinNoise.h"
 #include <cmath>
 #include <random>
 #include <algorithm>

@@ -1,6 +1,6 @@
-#include "Chunk.h"
-#include "PerlinNoise.h"
-#include "Header.hpp"
+#include "../include/Chunk.h"
+#include "../include/PerlinNoise.h"
+#include "../include/Header.hpp"
 
 Chunk::~Chunk()
 {
